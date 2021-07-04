@@ -14,9 +14,9 @@
 
 ## 下载
 
-https://thebusybiscuit.github.io/builds/Mooy1/SimpleUtils/master/
+[Release](https://github.com/ybw0014/SimpleUtils/releases)
 
-[![Build Status](https://thebusybiscuit.github.io/builds/Mooy1/SimpleUtils/master/badge.svg)](https://thebusybiscuit.github.io/builds/Mooy1/GridExpansion/master)
+[![Java CI](https://github.com/ybw0014/SimpleUtils/actions/workflows/maven.yml/badge.svg)](https://github.com/ybw0014/SimpleUtils/actions/workflows/maven.yml)
 
 ## 需求
 
@@ -28,7 +28,7 @@ Slimefun 版本: DEV 900+
 
 ## 更新日志
 
-### 2021年7月4日
+### 2021年7月4日 - dev-9
 
 - 移除: 简易筛矿机, 挖矿锤子
 - 修复: 融合工作台现在可以正常升级背包了
