@@ -28,7 +28,7 @@ final class ResearchableItemStack extends CustomItem {
             if (prof.get().hasUnlocked(this.research)) {
                 return false;
             } else {
-                p.sendMessage(ChatColor.RED + "You need to research " + this.name + ChatColor.RED + " before you can craft it!");
+                p.sendMessage(ChatColor.RED + "你必须解锁物品 " + this.name + ChatColor.RED + " 才能合成它!");
             }
         }
         return true;

@@ -1,12 +1,18 @@
 package io.github.mooy1.simpleutils.implementation.blocks.workbench;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import me.mrCookieSlime.Slimefun.cscorelib2.chat.ChatColors;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -15,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,14 +46,14 @@ public final class Workbench extends SlimefunItem implements Listener {
     private static final int OUTPUT_SLOT = 24;
     private static final ItemStack NO_OUTPUT = new CustomItem(Material.BARRIER, " ");
 
-    private final NamespacedKey displayKey = SimpleUtils.inst().getKey("display");
+    private final NamespacedKey displayKey = SimpleUtils.getInstance().getKey("display");
     private final Map<UUID, BlockMenu> openMenus = new HashMap<>();
     private final RecipeRegistry recipes = new RecipeRegistry();
 
     public Workbench(Category category, SlimefunItemStack itemStack, RecipeType recipeType, ItemStack[] r) {
         super(category, itemStack, recipeType, r);
 
-        SimpleUtils.inst().registerListener(this);
+        SimpleUtils.getInstance().registerListener(this);
 
         new BlockMenuPreset(getId(), getItemName()) {
 
@@ -118,6 +125,25 @@ public final class Workbench extends SlimefunItem implements Listener {
             return;
         }
 
+        // Backpack check
+        SlimefunItem sfItem = SlimefunItem.getByItem(output);
+
+        if (sfItem instanceof SlimefunBackpack) {
+            //SlimefunPlugin.logger().info("Item is backpack");
+
+            ItemStack inp = null;
+            for (int i = 0 ; i < INPUT_SLOTS.length ; i++) {
+                ItemStack in = menu.getItemInSlot(INPUT_SLOTS[i]);
+                if (in == null) continue;
+                if (in.getType() != Material.AIR && SlimefunItem.getByItem(in) instanceof SlimefunBackpack) {
+                    inp = in;
+                }
+            }
+
+            upgradeBackpack(p, inp, (SlimefunBackpack) sfItem, output);
+
+        }
+
         // find smallest amount greater than 0
         int lowestAmount = 65;
         for (int i : amounts) {
@@ -185,8 +211,65 @@ public final class Workbench extends SlimefunItem implements Listener {
         }
     }
 
+    @ParametersAreNonnullByDefault
+    protected void upgradeBackpack(Player p, ItemStack input, SlimefunBackpack backpack, ItemStack output) {
+                // Fixes #2574 - Carry over the Soulbound status
+        if (SlimefunUtils.isSoulbound(input)) {
+            SlimefunUtils.setSoulbound(output, true);
+        }
+
+        int size = backpack.getSize();
+        Optional<String> id = retrieveID(input, size);
+
+        if (id.isPresent()) {
+            for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
+                if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
+                    ItemMeta im = output.getItemMeta();
+                    List<String> lore = im.getLore();
+                    lore.set(line, lore.get(line).replace("<ID>", id.get()));
+                    im.setLore(lore);
+                    output.setItemMeta(im);
+                    break;
+                }
+            }
+        } else {
+            for (int line = 0; line < output.getItemMeta().getLore().size(); line++) {
+                if (output.getItemMeta().getLore().get(line).equals(ChatColors.color("&7ID: <ID>"))) {
+                    int target = line;
+
+                    PlayerProfile.get(p, profile -> {
+                        int backpackId = profile.createBackpack(size).getId();
+                        SlimefunPlugin.getBackpackListener().setBackpackId(p, output, target, backpackId);
+                    });
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private @Nonnull Optional<String> retrieveID(@Nullable ItemStack backpack, int size) {
+        if (backpack != null) {
+            for (String line : backpack.getItemMeta().getLore()) {
+                if (line.startsWith(ChatColors.color("&7ID: ")) && line.contains("#")) {
+                    String id = line.replace(ChatColors.color("&7ID: "), "");
+                    String[] idSplit = PatternUtils.HASH.split(id);
+
+                    PlayerProfile.fromUUID(UUID.fromString(idSplit[0]), profile -> {
+                        Optional<PlayerBackpack> optional = profile.getBackpack(Integer.parseInt(idSplit[1]));
+                        optional.ifPresent(playerBackpack -> playerBackpack.setSize(size));
+                    });
+
+                    return Optional.of(id);
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
     private void refreshOutput(@Nonnull BlockMenu menu) {
-        SimpleUtils.inst().runSync(() -> {
+        SimpleUtils.getInstance().runSync(() -> {
             ItemStack[] input = new ItemStack[9];
             for (int i = 0 ; i < INPUT_SLOTS.length ; i++) {
                 input[i] = menu.getItemInSlot(INPUT_SLOTS[i]);

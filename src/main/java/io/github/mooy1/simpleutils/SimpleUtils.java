@@ -10,7 +10,7 @@ public final class SimpleUtils extends AbstractAddon {
 
     private static SimpleUtils instance;
 
-    public static SimpleUtils inst() {
+    public static SimpleUtils getInstance() {
         return instance;
     }
 
@@ -35,7 +35,7 @@ public final class SimpleUtils extends AbstractAddon {
     @Nonnull
     @Override
     protected String getGithubPath() {
-        return "Mooy1/SimpleUtils/master";
+        return "ybw0014/SimpleUtils/master";
     }
 
 }

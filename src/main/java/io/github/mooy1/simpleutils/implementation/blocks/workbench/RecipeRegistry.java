@@ -90,7 +90,7 @@ final class RecipeRegistry {
             }
         });
 
-        SimpleUtils.inst().runSync(() -> {
+        SimpleUtils.getInstance().runSync(() -> {
             for (RecipeType type : Arrays.asList(RecipeType.ENHANCED_CRAFTING_TABLE, RecipeType.ARMOR_FORGE, RecipeType.MAGIC_WORKBENCH)) {
                 List<ItemStack[]> list = ((MultiBlockMachine) type.getMachine()).getRecipes();
                 for (int i = 0 ; i < list.size() ; i += 2) {

@@ -29,7 +29,7 @@ public final class Elevator extends SlimefunItem implements Listener {
 
     public Elevator(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
-        SimpleUtils.inst().registerListener(this);
+        SimpleUtils.getInstance().registerListener(this);
         addItemHandler(new BlockBreakHandler(false, false) {
             @Override
             public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {

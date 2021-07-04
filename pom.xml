@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.mooy1</groupId>
     <artifactId>SimpleUtils</artifactId>
-    <version>MODIFIED</version>
+    <version>dev-9</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <author>Mooy1</author>
+        <author>Mooy1, LobbyTech-MC, ybw0014</author>
     </properties>
 
     <repositories>
@@ -59,7 +59,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name} v${project.version}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 
