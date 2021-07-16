@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import io.github.mooy1.infinitylib.AbstractAddon;
 import io.github.mooy1.infinitylib.bstats.bukkit.Metrics;
+import io.github.mooy1.infinitylib.bstats.charts.SimplePie;
 import io.github.mooy1.simpleutils.implementation.Items;
 
 public final class SimpleUtils extends AbstractAddon {
@@ -29,7 +30,10 @@ public final class SimpleUtils extends AbstractAddon {
     @Nonnull
     @Override
     protected Metrics setupMetrics() {
-        return new Metrics(this, 10285);
+        Metrics metrics = new Metrics(this, 10285);
+        String ixInstalled = String.valueOf(getServer().getPluginManager().isPluginEnabled("InfinityExpansion"));
+        metrics.addCustomChart(new SimplePie("ix_installed", () -> ixInstalled));
+        return metrics;
     }
 
     @Nonnull

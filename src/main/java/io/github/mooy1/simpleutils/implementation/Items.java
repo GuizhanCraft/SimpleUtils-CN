@@ -27,12 +27,6 @@ public final class Items {
             "&6简易扳手",
             "&e右键快速破坏货运、电容、机器"
     );
-    public static final SlimefunItemStack SIEVE = new SlimefunItemStack(
-            "SIMPLE_SIEVE",
-            Material.COMPOSTER,
-            "&6简易筛矿机",
-            "&7将矿石变为矿粉或材料"
-    );
     public static final SlimefunItemStack ELEVATOR = new SlimefunItemStack(
             "SIMPLE_ELEVATOR",
             Material.QUARTZ_BLOCK,
@@ -53,7 +47,6 @@ public final class Items {
         new Workbench(category, WORKBENCH, RecipeType.ENHANCED_CRAFTING_TABLE,
                 Arrays.copyOf(new ItemStack[] {new ItemStack(Material.CRAFTING_TABLE)}, 9)
         ).register(plugin);
-
 
         new Elevator(category, ELEVATOR, RecipeType.ENHANCED_CRAFTING_TABLE, new ItemStack[] {
                 new ItemStack(Material.QUARTZ_BLOCK), new ItemStack(Material.QUARTZ_BLOCK), new ItemStack(Material.QUARTZ_BLOCK),
