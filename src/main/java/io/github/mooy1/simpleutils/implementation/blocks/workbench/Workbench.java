@@ -23,7 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import io.github.mooy1.infinitylib.presets.MenuPreset;
-import io.github.mooy1.infinitylib.slimefun.AbstractContainer;
 import io.github.mooy1.simpleutils.SimpleUtils;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -42,6 +41,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import me.mrCookieSlime.Slimefun.cscorelib2.chat.ChatColors;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import me.mrCookieSlime.Slimefun.cscorelib2.protection.ProtectableAction;
 
 public final class Workbench extends SlimefunItem implements Listener {
 
@@ -92,7 +92,8 @@ public final class Workbench extends SlimefunItem implements Listener {
 
             @Override
             public boolean canOpen(@Nonnull Block b, @Nonnull Player p) {
-                return AbstractContainer.canOpen(b, p);
+                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager()
+                        .hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK);
             }
 
             @Override

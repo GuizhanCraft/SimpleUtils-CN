@@ -16,16 +16,14 @@ public final class SimpleUtils extends AbstractAddon {
     }
 
     @Override
-    public void onEnable() {
+    public void enable() {
         instance = this;
-
-        super.onEnable();
 
         Items.setup(this);
     }
 
     @Override
-    public void onDisable() {
+    public void disable() {
         instance = null;
     }
 
@@ -44,4 +42,9 @@ public final class SimpleUtils extends AbstractAddon {
         return "ybw0014/SimpleUtils/master";
     }
 
+    @Nonnull
+    @Override
+    public String getAutoUpdatePath() {
+        return "auto-update";
+    }
 }

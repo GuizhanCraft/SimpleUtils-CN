@@ -23,7 +23,7 @@ import me.mrCookieSlime.Slimefun.cscorelib2.protection.ProtectableAction;
 
 public final class Wrench extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
-    private final CoolDownMap coolDowns = new CoolDownMap();
+    private final CoolDownMap cooldowns = new CoolDownMap(50);
 
     public Wrench(Category category, SlimefunItemStack item, RecipeType type, ItemStack[] recipe) {
         super(category, item, type, recipe);
@@ -36,7 +36,7 @@ public final class Wrench extends SimpleSlimefunItem<ItemUseHandler> implements 
             e.setUseItem(Event.Result.DENY);
             e.setUseBlock(Event.Result.DENY);
 
-            if (this.coolDowns.check(e.getPlayer().getUniqueId(), 50)
+            if (this.cooldowns.check(e.getPlayer().getUniqueId())
                     && e.getClickedBlock().isPresent() && e.getSlimefunBlock().isPresent()) {
 
                 Block b = e.getClickedBlock().get();
@@ -46,7 +46,7 @@ public final class Wrench extends SimpleSlimefunItem<ItemUseHandler> implements 
                         && !sfItem.useVanillaBlockBreaking()
                         && (b.getType() == Material.PLAYER_HEAD || b.getType() == Material.PLAYER_WALL_HEAD || sfItem instanceof EnergyNetComponent)) {
 
-                    this.coolDowns.reset(e.getPlayer().getUniqueId());
+                    this.cooldowns.reset(e.getPlayer().getUniqueId());
 
                     BlockBreakEvent event = new BlockBreakEvent(b, e.getPlayer());
 

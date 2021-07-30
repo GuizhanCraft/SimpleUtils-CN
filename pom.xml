@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.mooy1</groupId>
     <artifactId>SimpleUtils</artifactId>
-    <version>DEV-10-zh_CN</version>
+    <version>DEV-10-zh_CN-patch-1</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-23</version>
+            <version>RC-26</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -51,9 +51,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.mooy1</groupId>
+            <groupId>com.github.ybw0014</groupId>
             <artifactId>InfinityLib</artifactId>
-            <version>8c5edb6</version>
+            <version>78248c5</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
