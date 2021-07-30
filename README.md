@@ -28,8 +28,6 @@ Slimefun 版本: DEV 900+
 
 ## 更新日志
 
-### 2021年7月4日 - dev-9
-
 Dev 8 - Fixed sieve, requires slimefun Dev 900+ now
 
 Dev 9 - Fix 2 bugs, hammers are deprecated
