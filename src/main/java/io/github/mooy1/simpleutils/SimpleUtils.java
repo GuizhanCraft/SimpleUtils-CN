@@ -18,7 +18,9 @@ public final class SimpleUtils extends AbstractAddon {
     @Override
     public void onEnable() {
         instance = this;
+
         super.onEnable();
+
         Items.setup(this);
     }
 

@@ -30,9 +30,8 @@ Slimefun 版本: DEV 900+
 
 ### 2021年7月4日 - dev-9
 
-- 移除: 简易筛矿机, 挖矿锤子
-- 修复: 融合工作台现在可以正常升级背包了
+Dev 8 - Fixed sieve, requires slimefun Dev 900+ now
 
-### 旧版本
+Dev 9 - Fix 2 bugs, hammers are deprecated
 
-见[此处](https://github.com/Mooy1/SimpleUtils#changelog)
+Dev 10 - Removed Hammers, added new metrics

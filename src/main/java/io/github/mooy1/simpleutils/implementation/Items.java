@@ -59,7 +59,6 @@ public final class Items {
                 null, SlimefunItems.SILVER_INGOT, null,
                 null, SlimefunItems.ALUMINUM_INGOT, null
         }).register(plugin);
-
     }
 
 }
