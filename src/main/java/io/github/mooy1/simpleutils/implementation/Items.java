@@ -42,7 +42,7 @@ public final class Items {
     );
 
     public static void setup(@Nonnull SimpleUtils plugin) {
-        Category category = new Category(SimpleUtils.getInstance().getKey("main"), new CustomItem(Material.COMPOSTER, "&6简易工具"), 0);
+        Category category = new Category(SimpleUtils.getInstance().getKey("main"), new CustomItem(WRENCH, "&6简易工具"), 0);
 
         new Workbench(category, WORKBENCH, RecipeType.ENHANCED_CRAFTING_TABLE,
                 Arrays.copyOf(new ItemStack[] {new ItemStack(Material.CRAFTING_TABLE)}, 9)
