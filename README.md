@@ -1,8 +1,6 @@
-# 简易工具(SimpleUtils)
+# SimpleUtils 简易工具
 
 一个小型粘液科技(Slimefun)扩展，添加了有用的东西。
-
-
 
 ## 特性
 
@@ -14,9 +12,13 @@
 
 ## 下载
 
-[Release](https://github.com/ybw0014/SimpleUtils/releases)
+点击这里下载 SimpleUtils: [下载 SimpleUtils](https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/maven.yml)
 
-[![Java CI](https://github.com/ybw0014/SimpleUtils/actions/workflows/maven.yml/badge.svg)](https://github.com/ybw0014/SimpleUtils/actions/workflows/maven.yml)
+<p align="center">
+  <a href="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/maven.yml">
+    <img src="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/maven.yml/badge.svg" alt="Auto Build"/>
+  </a>
+</p>
 
 ## 需求
 
