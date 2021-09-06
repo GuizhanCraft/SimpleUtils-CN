@@ -1,50 +1,39 @@
 package io.github.mooy1.simpleutils;
 
-import javax.annotation.Nonnull;
+import java.io.File;
 
-import io.github.mooy1.infinitylib.AbstractAddon;
-import io.github.mooy1.infinitylib.bstats.bukkit.Metrics;
-import io.github.mooy1.infinitylib.bstats.charts.SimplePie;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPluginLoader;
+
+import io.github.mooy1.infinitylib.core.AbstractAddon;
+import io.github.mooy1.infinitylib.metrics.bukkit.Metrics;
+import io.github.mooy1.infinitylib.metrics.charts.SimplePie;
 import io.github.mooy1.simpleutils.implementation.Items;
 
 public final class SimpleUtils extends AbstractAddon {
 
-    private static SimpleUtils instance;
+    public SimpleUtils(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file,
+                "ybw0014", "SimpleUtils", "master", "auto-update");
+    }
 
-    public static SimpleUtils getInstance() {
-        return instance;
+    public SimpleUtils() {
+        super("ybw0014", "SimpleUtils", "master", "auto-update");
     }
 
     @Override
-    public void enable() {
-        instance = this;
-
+    protected void enable() {
         Items.setup(this);
-    }
-
-    @Override
-    public void disable() {
-        instance = null;
-    }
-
-    @Nonnull
-    @Override
-    protected Metrics setupMetrics() {
         Metrics metrics = new Metrics(this, 10285);
         String ixInstalled = String.valueOf(getServer().getPluginManager().isPluginEnabled("InfinityExpansion"));
+        String autoUpdates = String.valueOf(autoUpdatesEnabled());
         metrics.addCustomChart(new SimplePie("ix_installed", () -> ixInstalled));
-        return metrics;
+        metrics.addCustomChart(new SimplePie("auto_updates", () -> autoUpdates));
     }
 
-    @Nonnull
     @Override
-    protected String getGithubPath() {
-        return "ybw0014/SimpleUtils/master";
+    protected void disable() {
+
     }
 
-    @Nonnull
-    @Override
-    public String getAutoUpdatePath() {
-        return "auto-update";
-    }
 }

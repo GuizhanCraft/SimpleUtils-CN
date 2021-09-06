@@ -1,6 +1,6 @@
 name: SimpleUtils
-authors: [Mooy1, LobbyTech-MC, ybw0014]
-description: Simple utilities items for slimefun, translated by LobbyTech-MC, modified by ybw0014
+author: Mooy1
+description: Simple utility items for slimefun
 website: https://github.com/ybw0014/SimpleUtils
 main: io.github.mooy1.simpleutils.SimpleUtils
 depend: [Slimefun]
