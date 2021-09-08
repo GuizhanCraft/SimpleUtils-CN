@@ -24,7 +24,7 @@
 
 Minecraft 版本: 1.16+ (建议使用 Paper 端)
 
-Slimefun 版本: DEV 900+
+Slimefun 版本: DEV 966+
 
 [![Build Status](https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/master/badge.svg)](https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/master/)
 
