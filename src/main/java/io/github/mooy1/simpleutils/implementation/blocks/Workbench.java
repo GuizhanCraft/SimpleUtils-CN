@@ -3,8 +3,11 @@ package io.github.mooy1.simpleutils.implementation.blocks;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Bukkit;
@@ -17,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -26,12 +28,15 @@ import io.github.mooy1.infinitylib.common.Scheduler;
 import io.github.mooy1.infinitylib.machines.MachineLayout;
 import io.github.mooy1.infinitylib.machines.MenuBlock;
 import io.github.mooy1.simpleutils.SimpleUtils;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemStackSnapshot;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
@@ -44,13 +49,24 @@ public final class Workbench extends MenuBlock implements Listener {
     private static final ItemStack NO_OUTPUT = new CustomItemStack(Material.BARRIER, " ");
 
     private final NamespacedKey displayKey = SimpleUtils.createKey("display");
+    private final BiFunction<ItemStack[], Player, ItemStack> craftItem;
     private final Map<UUID, BlockMenu> openMenus = new HashMap<>();
     private final FakeEnhancedCrafter fakeEnhancedCrafter;
 
     public Workbench(ItemGroup category, SlimefunItemStack itemStack, RecipeType recipeType, ItemStack[] r) {
         super(category, itemStack, recipeType, r);
+
         Events.registerListener(this);
+
         fakeEnhancedCrafter = new FakeEnhancedCrafter(category, itemStack);
+
+        if (Slimefun.getMinecraftVersion().isBefore(MinecraftVersion.MINECRAFT_1_17)) {
+            craftItem = Workbench::craftItemOld;
+            Scheduler.run(() -> SimpleUtils.log(Level.WARNING,
+                    "The SimpleWorkbench may not be able to craft vanilla recipes in mc 1.16"));
+        } else {
+            craftItem = Workbench::craftItem;
+        }
     }
 
     @Override
@@ -70,13 +86,13 @@ public final class Workbench extends MenuBlock implements Listener {
         menu.addMenuCloseHandler(p -> Workbench.this.openMenus.remove(p.getUniqueId()));
         menu.addPlayerInventoryClickHandler((p, slot, item, action) -> {
             if (action.isShiftClicked()) {
-                refreshOutput(menu);
+                refreshOutput(menu, p);
             }
             return true;
         });
         for (int i : INPUT_SLOTS) {
             menu.addMenuClickHandler(i, (p, slot, item, action) -> {
-                refreshOutput(menu);
+                refreshOutput(menu, p);
                 return true;
             });
         }
@@ -84,7 +100,6 @@ public final class Workbench extends MenuBlock implements Listener {
             craft(p, menu, action.isShiftClicked());
             return false;
         });
-        refreshOutput(menu);
     }
 
     @Override
@@ -114,14 +129,15 @@ public final class Workbench extends MenuBlock implements Listener {
             }
         }
 
-        ItemStack output = Bukkit.craftItem(input, p.getWorld(), p);
-        if (output.getType().isAir()) {
-            output = fakeEnhancedCrafter.craft(input);
+        ItemStackSnapshot[] snap = ItemStackSnapshot.wrapArray(input);
+        ItemStack output = fakeEnhancedCrafter.craft(snap);
 
+        if (output == null) {
+            output = craftItem.apply(input, p);;
             if (output == null) {
                 return;
             }
-
+        } else {
             SlimefunItem item = SlimefunItem.getByItem(output);
 
             if (item != null) {
@@ -177,7 +193,7 @@ public final class Workbench extends MenuBlock implements Listener {
             }
 
             // refresh
-            refreshOutput(menu);
+            refreshOutput(menu, p);
 
         }
         else {
@@ -190,7 +206,7 @@ public final class Workbench extends MenuBlock implements Listener {
 
             // refresh if a slot will run out
             if (lowestAmount == 1) {
-                refreshOutput(menu);
+                refreshOutput(menu, p);
             }
 
             lowestAmount = 1;
@@ -204,21 +220,18 @@ public final class Workbench extends MenuBlock implements Listener {
         }
     }
 
-    private void refreshOutput(@Nonnull BlockMenu menu) {
+    private void refreshOutput(@Nonnull BlockMenu menu, Player p) {
         Scheduler.run(() -> {
             ItemStack[] input = new ItemStack[9];
             for (int i = 0 ; i < INPUT_SLOTS.length ; i++) {
                 input[i] = menu.getItemInSlot(INPUT_SLOTS[i]);
             }
 
-            Recipe recipe = Bukkit.getCraftingRecipe(input, menu.getBlock().getWorld());
-            ItemStack output;
+            ItemStackSnapshot[] snap = ItemStackSnapshot.wrapArray(input);
+            ItemStack output = fakeEnhancedCrafter.craft(snap);
 
-            if (recipe == null) {
-                output = fakeEnhancedCrafter.craft(input);
-            }
-            else {
-                output = recipe.getResult();
+            if (output == null) {
+                output = craftItem.apply(input, p);
             }
 
             if (output == null) {
@@ -238,8 +251,19 @@ public final class Workbench extends MenuBlock implements Listener {
     public void onDrag(@Nonnull InventoryDragEvent e) {
         BlockMenu menu = this.openMenus.get(e.getWhoClicked().getUniqueId());
         if (menu != null) {
-            refreshOutput(menu);
+            refreshOutput(menu, (Player) e.getWhoClicked());
         }
+    }
+
+    @Nullable
+    private static ItemStack craftItem(ItemStack[] input, Player p) {
+        ItemStack output = Bukkit.craftItem(input, p.getWorld(), p);
+        return output.getType().isAir() ? null : output;
+    }
+
+    @Nullable
+    private static ItemStack craftItemOld(ItemStack[] input, Player p) {
+        return null; // TODO find new way
     }
 
 }
