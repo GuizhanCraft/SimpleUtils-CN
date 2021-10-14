@@ -12,15 +12,11 @@
 
 ## 下载
 
-点击这里下载 SimpleUtils: [下载 SimpleUtils](https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/build.yml)
+点击这里下载 SimpleUtils: [下载 SimpleUtils](https://builds.guizhanss.net/ybw0014/SimpleUtils-CN/master)
 
 <p align="center">
   <a href="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/maven.yml">
     <img src="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/maven.yml/badge.svg" alt="Java CI"/>
-  </a>
-
-  <a href="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/build.yml">
-    <img src="https://github.com/ybw0014/SimpleUtils-CN/actions/workflows/build.yml/badge.svg" alt="Auto Build"/>
   </a>
 </p>
 
