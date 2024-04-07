@@ -1,7 +1,9 @@
 package io.github.mooy1.simpleutils;
 
 import java.io.File;
+import java.util.logging.Level;
 
+import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
@@ -14,15 +16,25 @@ public final class SimpleUtils extends AbstractAddon {
 
     public SimpleUtils(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file,
-                "ybw0014", "SimpleUtils", "master", "auto-update");
+                "SlimefunGuguProject", "SimpleUtils", "master", "auto-update");
     }
 
     public SimpleUtils() {
-        super("ybw0014", "SimpleUtils", "master", "auto-update");
+        super("SlimefunGuguProject", "SimpleUtils", "master", "auto-update");
     }
 
     @Override
     protected void enable() {
+        if (!getServer().getPluginManager().isPluginEnabled("GuizhanLibPlugin")) {
+            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件(GuizhanLibPlugin) 才能运行!");
+            getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (autoUpdatesEnabled() && getPluginVersion().startsWith("Build")) {
+            GuizhanUpdater.start(this, getFile(), "SlimefunGuguProject", "SimpleUtils", "master");
+        }
+
         Items.setup(this);
         Metrics metrics = new Metrics(this, 10285);
         String ixInstalled = String.valueOf(getServer().getPluginManager().isPluginEnabled("InfinityExpansion"));

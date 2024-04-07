@@ -4,7 +4,7 @@ description: Simple utility items for slimefun
 website: https://github.com/ybw0014/SimpleUtils
 main: io.github.mooy1.simpleutils.SimpleUtils
 depend: [Slimefun]
-softdepend: [InfinityExpansion]
+softdepend: [InfinityExpansion, GuizhanLibPlugin]
 version: ${project.version}
 api-version: 1.16
 

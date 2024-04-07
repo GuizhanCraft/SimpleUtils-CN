@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,9 +28,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 public final class Elevator extends SlimefunItem implements Listener {
 
@@ -55,7 +55,7 @@ public final class Elevator extends SlimefunItem implements Listener {
             }
 
             @Override
-            public void tick(Block block, SlimefunItem slimefunItem, Config config) {
+            public void tick(Block block, SlimefunItem slimefunItem, SlimefunBlockData data) {
                 if (SimpleUtils.slimefunTickCount() % 16 == 0 && block.getY() > block.getWorld().getMinHeight()) {
                     Material type = block.getRelative(0, -1, 0).getType();
                     if (type.isOccluding() && !SlimefunTag.UNBREAKABLE_MATERIALS.isTagged(type)) {
@@ -74,12 +74,12 @@ public final class Elevator extends SlimefunItem implements Listener {
                 && e.getFrom().getY() - e.getFrom().getBlockY() < 0.05) {
             Location check = elevatorUnder(e.getFrom());
 
-            if (BlockStorage.check(check, getId())) {
+            if (StorageCacheUtils.isBlock(check, getId())) {
                 teleport(e, this.locations.computeIfAbsent(check, elev -> {
                     int max = elev.getWorld().getMaxHeight();
                     elev.add(0, 2, 0);
                     while (elev.add(0, 1, 0).getY() < max) {
-                        if (BlockStorage.check(elev, getId())) {
+                        if (StorageCacheUtils.isBlock(elev, getId())) {
                             return elev;
                         }
                     }
@@ -94,12 +94,12 @@ public final class Elevator extends SlimefunItem implements Listener {
         if (e.isSneaking()) {
             Location check = elevatorUnder(e.getPlayer().getLocation());
 
-            if (BlockStorage.check(check, getId())) {
+            if (StorageCacheUtils.isBlock(check, getId())) {
                 teleport(e, this.locations.inverse().computeIfAbsent(check, elev -> {
                     int min = elev.getWorld().getMinHeight();
                     elev.subtract(0, 2, 0);
                     while (elev.subtract(0, 1, 0).getY() >= min) {
-                        if (BlockStorage.check(elev, getId())) {
+                        if (StorageCacheUtils.isBlock(elev, getId())) {
                             return elev;
                         }
                     }
